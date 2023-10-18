@@ -1,0 +1,38 @@
+{
+  "name": "ghost-myrtle",
+  "version": "1.0.0",
+  "description": "A CLI tool to generate content for your Ghost theme using OpenAI's GPT-3.5-turbo model.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "myrtle": "./index.js"
+  },
+  "keywords": [
+    "Ghost",
+    "Ghost CMS",
+    "OpenAI",
+    "GPT-3.5-turbo",
+    "content-generation",
+    "CLI",
+    "myrtle"
+  ],
+  "author": "Jannis Fedoruk-Betschki <jannis@magicpages.co>",
+  "license": "MIT",
+  "dependencies": {
+    "@tryghost/admin-api": "^1.13.8",
+    "dotenv": "^16.3.1",
+    "inquirer": "^9.2.11",
+    "openai": "^4.12.3",
+    "ora": "^7.0.1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/betschki/ghost-myrtle"
+  },
+  "bugs": {
+    "url": "https://github.com/betschki/ghost-myrtle/issues"
+  }
+}
