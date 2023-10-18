@@ -4,15 +4,10 @@ Ghost Myrtle is a NodeJS command-line interface (CLI) tool that aims to make it 
 
 In a nutshell, it uses the OpenAI GPT-3.5-turbo model to generate content that breathes life into your theme. **No more lorem ipsum!**
 
-## Table of contents
-
-- [Ghost Myrtle](#ghost-myrtle)
-  - [Table of contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [Commands](#commands)
-  - [License](#license)
-  - [Bugs](#bugs)
+**The Gotcha:** Ghost Myrtle is not a magic bullet. It's a tool that can help you create content for
+your theme demo sites, but it's not a replacement for human creativity. Do not expect to be able to
+use the tool to generate content for your production sites. Additionally, you might want to manually
+add some images to the content that the tool generates.
 
 ## Installation
 
