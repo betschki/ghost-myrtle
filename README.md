@@ -9,6 +9,13 @@ your theme demo sites, but it's not a replacement for human creativity. Do not e
 use the tool to generate content for your production sites. Additionally, you might want to manually
 add some images to the content that the tool generates.
 
+## Requirements
+In order to use Ghost Myrtle, you will need the following:
+
+* A [Ghost](https://ghost.org/) site that is accessible for Myrtle. Either on localhost or on a remote server.
+* A [Ghost Admin API key](https://ghost.org/docs/admin-api/#token-authentication) for the site.
+* An [OpenAI API key](https://openai.com/blog/openai-api) with access to the GPT-3.5-turbo model.
+
 ## Installation
 
 Before you begin, ensure you have [Node.js](https://nodejs.org/) installed on your system.
