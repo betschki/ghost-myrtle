@@ -16,6 +16,12 @@ Documentation can be found at https://github.com/betschki/ghost-myrtle
 
 async function createCommand() {
   try {
+    // check if config exists, otherwise prompt to run config command
+    if(process.env.GHOST_URL === undefined || process.env.GHOST_ADMIN_API_KEY === undefined || process.env.OPENAI_API_KEY === undefined) {
+      console.log('You need to run `myrtle config` first to configure your environment.');
+      return;
+    }
+
     await create();
   } catch (error) {
     console.error(`Error in create command: ${error.message}`);

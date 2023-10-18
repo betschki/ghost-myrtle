@@ -6,9 +6,18 @@ import ora from 'ora';
 
 dotenv.config();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openaiClient;
+
+function getOpenAIClient() {
+  if (!openaiClient) {
+    if (!process.env.OPENAI_API_KEY) {
+      console.error("OPENAI_API_KEY is not set. Please ensure it's available.");
+      process.exit(1);
+    }
+    openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return openaiClient;
+}
 
 async function pushToGhost(pageContents, categoryContents) {
   const api = new GhostAdminApi({
@@ -83,7 +92,7 @@ function cleanTitle(title) {
 async function generatePostTitles(promptContent, count) {
   const spinner = ora('Generating post titles...').start();
   try {
-    const chatCompletion = await openai.chat.completions.create({
+    const chatCompletion = await getOpenAIClient().chat.completions.create({
       messages: [{ role: 'user', content: promptContent }],
       model: 'gpt-3.5-turbo',
     });
@@ -103,7 +112,7 @@ async function generatePostTitles(promptContent, count) {
 async function generateContent(promptContent, title) {
   const spinner = ora(`Generating content for page/post "${title}"...`).start();
   try {
-    const chatCompletion = await openai.chat.completions.create({
+    const chatCompletion = await getOpenAIClient().chat.completions.create({
       messages: [{ role: 'user', content: promptContent }],
       model: 'gpt-3.5-turbo',
     });
