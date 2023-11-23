@@ -9,6 +9,9 @@ your theme demo sites, but it's not a replacement for human creativity. Do not e
 use the tool to generate content for your production sites. Additionally, you might want to manually
 add some images to the content that the tool generates.
 
+## Demo
+For the [Magic Pages](https://magicpages.co) exclusive Ghost theme "Kyiv", the entire blog content has been generated with Myrtle: [https://kyiv.magicpages.co](https://kyiv.magicpages.co)
+
 ## Requirements
 In order to use Ghost Myrtle, you will need the following:
 
