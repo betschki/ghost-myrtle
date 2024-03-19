@@ -85,8 +85,21 @@ function extractContent(html) {
 }
 
 function cleanTitle(title) {
-  // Remove numbering (e.g. 1., 2., 1), 2)) and wrapping quotes
-  return title.replace(/^\d+[\.)]\s+\"|\"$/g, '').trim();
+  let cleanedTitle = title.trim();
+
+  // First, remove any numbering (e.g. 1., 2., 3., etc.) 
+  cleanedTitle = cleanedTitle.replace(/^\d+\.\s*/, '');
+
+  // Then, remove any trailing punctuation
+  cleanedTitle = cleanedTitle.replace(/[:;,.!?]$/, '');
+
+  // Then, remove any quotation marks (both single and double)
+  cleanedTitle = cleanedTitle.replace(/['"]+/g, '');
+
+  // Finally, make sure the title is below 255 characters. We are prompting
+  // OpenAI to generate titles below 200 characters, but language models
+  // are known to hallucinate and generate longer titles sometimes.
+  cleanedTitle = cleanedTitle.slice(0, 255);
 }
 
 async function generatePostTitles(promptContent, count) {
@@ -100,7 +113,7 @@ async function generatePostTitles(promptContent, count) {
     const rawTitles = chatCompletion.choices[0].message.content
       .split('\n')
       .slice(0, count)
-      .map(cleanTitle); // Clean each title
+      .map(cleanTitle);
     return rawTitles;
   } catch (error) {
     spinner.fail('Error generating post titles.');
@@ -207,7 +220,7 @@ export default async function () {
 
   for (const category of categories) {
     const posts = [];
-    const titlePrompts = `Provide ${answers.postsPerCategory} unique blog post titles related to ${category}. The titles should be relevant to the theme: ${answers.storyDescription}, yet not mention the site name ${answers.siteName}. The titles should be written in a way that is engaging and informative. The reading level should be at a high school level.`;
+    const titlePrompts = `Provide ${answers.postsPerCategory} unique blog post titles related to ${category}. The titles should be relevant to the theme: ${answers.storyDescription}, yet not mention the site name ${answers.siteName}. The titles should be written in a way that is engaging and informative. The reading level should be at a high school level. The titles must not exceed 200 characters. The titles should be unique and not similar to each other.`;
     const postTitles = await generatePostTitles(
       titlePrompts,
       answers.postsPerCategory
