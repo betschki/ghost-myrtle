@@ -1,27 +1,29 @@
 # Ghost Myrtle
 
-Ghost Myrtle is a NodeJS command-line interface (CLI) tool that aims to make it easier for Ghost theme developers to create content for their theme demo sites.
+A modern CLI tool to generate high-quality, AI-powered content for Ghost CMS demo sites
 
-In a nutshell, it uses the OpenAI GPT-3.5-turbo model to generate content that breathes life into your theme. **No more lorem ipsum!**
+Ghost Myrtle helps Ghost theme developers and site creators generate sample content for their themes and demo sites. Using language models from multiple AI providers, it creates realistic blog posts, static pages, and comprehensive content that showcases your theme's capabilities—**no more lorem ipsum!**
 
-**The Gotcha:** Ghost Myrtle is not a magic bullet. It's a tool that can help you create content for
-your theme demo sites, but it's not a replacement for human creativity. Do not expect to be able to
-use the tool to generate content for your production sites. Additionally, you might want to manually
-add some images to the content that the tool generates.
+## ✨ Features
 
-## Demo
-For the [Magic Pages](https://magicpages.co) exclusive Ghost theme "Kyiv", the entire blog content has been generated with Myrtle: [https://kyiv.magicpages.co](https://kyiv.magicpages.co)
+- **🤖 Multiple AI Providers**: OpenAI, Anthropic (Claude), OpenRouter, or self-hosted models
+- **📸 Keyword-Relevant Images**: Automatic Pexels integration for relevant stock photos (or Lorem Picsum fallback)
+- **📝 Rich Content Generation**: Blog posts with proper formatting, SEO structure, and images
+- **🎨 Style Guide Page**: Optional comprehensive showcase of Ghost's formatting capabilities
+- **💾 Resume Functionality**: Interrupted sessions automatically save and can be resumed
+- **🔄 Flexible Configuration**: Easy provider switching and per-generation settings
 
-## Requirements
-In order to use Ghost Myrtle, you will need the following:
+## 📋 Requirements
 
-* A [Ghost](https://ghost.org/) site that is accessible for Myrtle. Either on localhost or on a remote server.
-* A [Ghost Admin API key](https://ghost.org/docs/admin-api/#token-authentication) for the site.
-* An [OpenAI API key](https://openai.com/blog/openai-api) with access to the GPT-3.5-turbo model.
+- **Node.js**: v22.0.0 or higher
+- **Ghost Site**: Local or remote Ghost installation with Admin API access
+- **AI Provider Account**: At least one of the following:
+  - [OpenAI API key](https://platform.openai.com/api-keys) (GPT-4, GPT-3.5, etc.)
+  - [Anthropic API key](https://console.anthropic.com/) (Claude models)
+  - [OpenRouter API key](https://openrouter.ai/keys) (access to 100+ models)
+  - Self-hosted LLM with OpenAI-compatible API
 
-## Installation
-
-Before you begin, ensure you have [Node.js](https://nodejs.org/) installed on your system.
+## 🚀 Installation
 
 Install Ghost Myrtle globally using npm:
 
@@ -29,22 +31,243 @@ Install Ghost Myrtle globally using npm:
 npm install -g ghost-myrtle
 ```
 
-## Usage
+Or use it directly with npx:
 
-After installation, you can use the `myrtle` command in your terminal to interact with the tool. Run `myrtle --help` to see a list of available commands.
+```bash
+npx ghost-myrtle [command]
+```
 
-## Commands
+## ⚙️ Configuration
 
-- `myrtle config`: Configure your environment. You will be prompted to enter your Ghost URL, Ghost Admin API key, and OpenAI API key. This data will be saved locally in a `.env` file.
+### Initial Setup
 
-- `myrtle create`: Create content for your theme. You will be prompted to enter details about your site and the type of content you want to create. The tool will then generate content and push it to your Ghost site using the Ghost Admin API. No manual copy-pasting required!
+Run the configuration wizard to set up your Ghost site and AI provider:
 
-- `myrtle help`: Show a help message including a list of commands and their descriptions.
+```bash
+myrtle config
+```
 
-## License
+You'll be guided through:
+
+1. **Ghost Configuration**: Enter your Ghost site URL and Admin API key
+2. **Provider Selection**: Choose your preferred AI provider
+3. **Provider Setup**: Configure API credentials and model selection
+4. **Generation Settings**: Set default temperature and token limits
+
+### Ghost Admin API Key
+
+To get your Ghost Admin API key:
+
+1. Go to your Ghost Admin panel
+2. Navigate to **Settings** → **Integrations**
+3. Create a new **Custom Integration**
+4. Copy the **Admin API Key** and **API URL**
+
+### Provider-Specific Configuration
+
+#### OpenAI
+
+```bash
+myrtle config provider openai
+```
+
+- **API Key**: Get from [OpenAI Platform](https://platform.openai.com/api-keys)
+- **Models**: Fetched automatically (GPT-4, GPT-3.5-turbo, etc.)
+
+#### Anthropic (Claude)
+
+```bash
+myrtle config provider anthropic
+```
+
+- **API Key**: Get from [Anthropic Console](https://console.anthropic.com/)
+- **Models**: Claude Sonnet 4.5, Opus 3, Haiku 3.5
+
+#### OpenRouter
+
+```bash
+myrtle config provider openrouter
+```
+
+- **API Key**: Get from [OpenRouter](https://openrouter.ai/keys)
+- **Models**: 100+ models fetched automatically
+- **Note**: Check [OpenRouter pricing](https://openrouter.ai/models) for model costs
+
+#### Self-Hosted
+
+```bash
+myrtle config provider self-hosted
+```
+
+- **Endpoint**: Your local/remote model endpoint (e.g., `http://localhost:11434/v1`)
+- **Models**: Fetched from your endpoint's `/models` API
+
+### Image Configuration (Optional)
+
+#### Pexels API
+
+Configure Pexels to get keyword-relevant images in your blog posts:
+
+```bash
+myrtle config pexels
+```
+
+- **API Key**: Get free from [Pexels API](https://www.pexels.com/api/)
+- **Free Tier**: 200 requests/hour, 20,000/month
+- **Benefits**:
+  - Keyword-relevant stock photos automatically added to posts
+  - Proper photographer attribution
+- **Fallback**: If not configured, posts use Lorem Picsum placeholder images
+
+**Getting a Pexels API Key:**
+1. Visit [pexels.com/api](https://www.pexels.com/api/)
+2. Sign up for a free account
+3. Get instant API key (no approval needed)
+4. Run `myrtle config pexels` and paste your key
+
+
+## 📖 Usage
+
+### Generate Content
+
+Start the content generation wizard:
+
+```bash
+myrtle create
+```
+
+You'll be prompted for:
+
+- **Site Information**: Name, type, description, target audience
+- **Content Options**: Static pages, style guide, blog categories
+- **Post Configuration**: Number of posts per category
+
+The tool will then:
+
+1. ✅ Generate static pages (About, Contact, etc.)
+2. ✅ Create style guide page (optional)
+3. ✅ Generate diverse blog post titles for each category
+4. ✅ Write full blog posts with images and formatting
+5. ✅ Push everything to your Ghost site
+
+### Resume Interrupted Sessions
+
+If generation is interrupted (API limits, network issues, etc.), simply run:
+
+```bash
+myrtle create
+```
+
+The tool will detect your saved progress and offer to resume.
+
+### Command Options
+
+```bash
+# Dry run (generate without pushing to Ghost)
+myrtle create --dry-run
+
+# Preview content as it's generated
+myrtle create --preview
+
+# Use a specific provider for this session
+myrtle create --provider anthropic
+
+# Override temperature setting
+myrtle create --temperature 0.9
+```
+
+### Other Commands
+
+```bash
+# Show help
+myrtle help
+myrtle --help
+
+# Show version
+myrtle --version
+
+# Configure a specific provider
+myrtle config provider [openai|anthropic|openrouter|self-hosted]
+```
+
+### Theme Showcase
+
+Enable the **Style Guide** option to generate a comprehensive page showing:
+- Typography (headings, paragraphs, blockquotes)
+- Lists (ordered, unordered, nested)
+- Code blocks and inline code
+- Images and galleries
+- Tables and embeds
+- Ghost-specific cards (buttons, toggles, etc.)
+
+## 🔍 Troubleshooting
+
+### "Provider not configured" Error
+
+Run the configuration for your provider:
+
+```bash
+myrtle config provider [provider-name]
+```
+
+### "Could not connect to Ghost" Error
+
+1. Verify your Ghost site is accessible
+2. Check Admin API key is correct
+3. Ensure API URL includes `/ghost/api/admin/` path
+4. Test connection: `curl [YOUR_GHOST_URL]/ghost/api/admin/site/`
+
+### "API Error" or Rate Limits
+
+- **OpenAI**: Check [usage limits](https://platform.openai.com/account/limits)
+- **Anthropic**: Check [console billing](https://console.anthropic.com/settings/billing)
+- **OpenRouter**: Check [credits balance](https://openrouter.ai/credits)
+- Use `--provider` flag to switch to a different provider
+
+### Resume Not Working
+
+The state file `.myrtle-state.json` should be in your current directory. Check:
+
+```bash
+ls -la .myrtle-state.json
+```
+
+If missing, the session completed or was cleared. Start a new generation.
+
+## 🏗️ Development
+
+### Build from Source
+
+```bash
+# Clone the repository
+git clone https://github.com/betschki/ghost-myrtle.git
+cd ghost-myrtle
+
+# Install dependencies
+npm install
+
+# Build TypeScript
+npm run build
+
+# Link for local testing
+npm link
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
+
+## 📄 License
 
 Ghost Myrtle is [MIT licensed](LICENSE).
 
-## Bugs
+## 🐛 Issues
 
-If you encounter any issues, please report them [here](https://github.com/betschki/ghost-myrtle/issues).
+If you encounter any issues, please report them on [GitHub Issues](https://github.com/betschki/ghost-myrtle/issues).
+
+## 🙏 Acknowledgments
+
+- Built for the [Ghost](https://ghost.org) publishing platform
+- Powered by [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), and [OpenRouter](https://openrouter.ai)
+- Created to help theme developers showcase their work with realistic content
+- Initially created for sample content on [Kyiv](https://kyiv.magicpages.co), updated to version 2.0.0 for sample content on [Alpine](https://alpine.magicpages.co)

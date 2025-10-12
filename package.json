@@ -1,31 +1,47 @@
 {
   "name": "ghost-myrtle",
-  "version": "1.0.1",
-  "description": "A CLI tool to generate content for your Ghost theme using OpenAI's GPT-3.5-turbo model.",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "A modern CLI tool to generate content for Ghost CMS using multiple AI providers (OpenAI, Anthropic, OpenRouter, Self-hosted).",
+  "main": "dist/cli/index.js",
   "scripts": {
+    "build": "tsc && npm run copy-templates",
+    "copy-templates": "mkdir -p dist/generators/templates && cp -r src/generators/templates/* dist/generators/templates/",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "myrtle": "./index.js"
+    "myrtle": "./dist/cli/index.js"
   },
   "keywords": [
     "Ghost",
     "Ghost CMS",
     "OpenAI",
-    "GPT-3.5-turbo",
+    "Anthropic",
+    "Claude",
+    "OpenRouter",
+    "GPT-4",
     "content-generation",
+    "AI",
     "CLI",
     "myrtle"
   ],
   "author": "Jannis Fedoruk-Betschki <jannis@magicpages.co>",
   "license": "MIT",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
     "@tryghost/admin-api": "^1.13.8",
     "dotenv": "^16.3.1",
     "inquirer": "^9.2.11",
-    "openai": "^4.12.3",
-    "ora": "^7.0.1"
+    "openai": "^4.75.0",
+    "ora": "^7.0.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.17.10",
+    "typescript": "^5.7.2"
   },
   "type": "module",
   "repository": {

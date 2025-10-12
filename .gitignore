@@ -89,3 +89,11 @@ lerna-debug.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Myrtle-specific files
+.myrtle-config.json
+myrtle.config.json
+.myrtle-state.json
+*.key
+*.backup
+.env.v1.backup
