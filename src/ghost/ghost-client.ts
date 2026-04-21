@@ -4,6 +4,7 @@ import type {
   PageContent,
   CategoryContent,
   GhostPost,
+  PostContent,
 } from '../types/index.js';
 import { GhostApiError } from '../types/index.js';
 
@@ -73,7 +74,7 @@ export class GhostClient {
    * Push a single post to Ghost
    */
   async pushPost(
-    post: { title: string; content: string },
+    post: PostContent,
     tags: string[],
     status: 'draft' | 'published' = 'published'
   ): Promise<void> {
@@ -81,6 +82,9 @@ export class GhostClient {
       const ghostPost: GhostPost = {
         title: post.title,
         html: post.content,
+        feature_image: post.featureImage?.url,
+        feature_image_alt: post.featureImage?.alt,
+        feature_image_caption: post.featureImage?.caption,
         tags: tags.map((tag) => ({
           name: tag,
           description: `Content related to ${tag}`,

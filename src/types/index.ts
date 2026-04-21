@@ -126,10 +126,17 @@ export interface ContentRequest {
   customPrompt?: string;
 }
 
+export interface FeaturedImage {
+  url: string;
+  alt: string;
+  caption?: string;
+}
+
 export interface GeneratedContent {
   title: string;
   content: string;
   excerpt?: string;
+  featureImage?: FeaturedImage;
   metadata?: {
     keywords?: string[];
     readingTime?: number;
@@ -147,6 +154,7 @@ export interface PageContent {
 export interface PostContent {
   title: string;
   content: string;
+  featureImage?: FeaturedImage;
 }
 
 export interface CategoryContent {
@@ -169,6 +177,9 @@ export interface GhostPage {
 export interface GhostPost {
   title: string;
   html: string;
+  feature_image?: string;
+  feature_image_alt?: string;
+  feature_image_caption?: string;
   tags: Array<{
     name: string;
     description?: string;
