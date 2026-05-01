@@ -14,6 +14,7 @@ declare module '@tryghost/admin-api' {
   interface PostObject {
     title: string;
     html: string;
+    custom_excerpt?: string;
     feature_image?: string;
     feature_image_alt?: string;
     feature_image_caption?: string;

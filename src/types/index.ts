@@ -154,6 +154,7 @@ export interface PageContent {
 export interface PostContent {
   title: string;
   content: string;
+  excerpt?: string;
   featureImage?: FeaturedImage;
 }
 
@@ -177,6 +178,7 @@ export interface GhostPage {
 export interface GhostPost {
   title: string;
   html: string;
+  custom_excerpt?: string;
   feature_image?: string;
   feature_image_alt?: string;
   feature_image_caption?: string;
