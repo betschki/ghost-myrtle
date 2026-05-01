@@ -74,10 +74,12 @@ export class ContentGenerator {
 
     const content = this.extractContent(response.content);
     const wordCount = this.countWords(content);
+    const excerpt = this.generateExcerpt(content);
 
     return {
       title,
       content,
+      excerpt,
       featureImage,
       metadata: {
         keywords,
@@ -165,20 +167,38 @@ export class ContentGenerator {
   }
 
   /**
-   * Generate excerpt from content
+   * Generate a card-friendly excerpt from rendered HTML. Prefers the first
+   * paragraph (skipping headings, figures, blockquotes, etc.) so listings
+   * show actual prose rather than a section title.
+   *
+   * Ghost's `custom_excerpt` is capped at 300 characters, so the default
+   * stays well under that.
    */
-  generateExcerpt(html: string, maxLength: number = 160): string {
-    // Strip HTML tags
-    const text = html.replace(/<[^>]*>/g, ' ').trim();
+  generateExcerpt(html: string, maxLength: number = 200): string {
+    const firstParagraph = html.match(/<p[^>]*>([\s\S]*?)<\/p>/i)?.[1] ?? html;
+    const text = firstParagraph
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-    // Get first sentence or maxLength characters
-    const sentences = text.split(/[.!?]\s+/);
-    const firstSentence = sentences[0] || text;
-
-    if (firstSentence.length <= maxLength) {
-      return firstSentence + '.';
+    if (text.length === 0) {
+      return '';
     }
 
-    return text.substring(0, maxLength).trim() + '...';
+    // Try to break on a sentence boundary if the paragraph is long.
+    if (text.length > maxLength) {
+      const truncated = text.substring(0, maxLength);
+      const lastSentenceEnd = Math.max(
+        truncated.lastIndexOf('. '),
+        truncated.lastIndexOf('! '),
+        truncated.lastIndexOf('? ')
+      );
+      if (lastSentenceEnd > maxLength / 2) {
+        return truncated.substring(0, lastSentenceEnd + 1);
+      }
+      return truncated.trimEnd() + '…';
+    }
+
+    return text;
   }
 }

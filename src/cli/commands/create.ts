@@ -409,6 +409,7 @@ export async function createCommand(args: string[]): Promise<void> {
         const post: PostContent = {
           title: generated.title,
           content: generated.content,
+          excerpt: generated.excerpt,
           featureImage: generated.featureImage,
         };
 

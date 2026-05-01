@@ -82,6 +82,7 @@ export class GhostClient {
       const ghostPost: GhostPost = {
         title: post.title,
         html: post.content,
+        custom_excerpt: post.excerpt,
         feature_image: post.featureImage?.url,
         feature_image_alt: post.featureImage?.alt,
         feature_image_caption: post.featureImage?.caption,
