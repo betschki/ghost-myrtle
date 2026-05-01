@@ -14,6 +14,12 @@
   "bin": {
     "myrtle": "./dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "keywords": [
     "Ghost",
     "Ghost CMS",
