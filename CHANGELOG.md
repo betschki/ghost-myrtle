@@ -5,6 +5,65 @@ All notable changes to Ghost Myrtle will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-05-01
+
+### ✨ New Features
+
+- **Featured images on generated posts** (#6, thanks @jasonheecs): the first
+  fetched image is now used as Ghost's `feature_image` (with `feature_image_alt`
+  and `feature_image_caption`), so theme card listings, archives, and post
+  hero areas render with proper imagery instead of an empty hero. Remaining
+  images still go inline in the post body.
+- **Excerpts wired to Ghost's `custom_excerpt`** (#9): generated posts now
+  ship with a teaser-style excerpt extracted from the first paragraph, so
+  card listings show real prose instead of whatever Ghost auto-truncates from
+  the body HTML.
+
+### 🔧 Improvements
+
+- **More resilient Pexels image pipeline** (#8):
+  - Empty Pexels search results no longer produce image-less posts. The
+    image service now retries each provided keyword in turn (e.g. title,
+    then category) before falling through to Lorem Picsum.
+  - **Pexels-compliant attribution**: photo credits now link the
+    photographer's Pexels profile and pexels.com per the API guidelines.
+    Photographer display names are HTML-escaped (defense-in-depth) and
+    non-http(s) profile URLs are rejected.
+  - Lorem Picsum fallbacks no longer caption "Photo by Lorem Picsum" — the
+    figcaption is dropped entirely on the hero and inline images.
+  - Lorem Picsum fallback no longer pads with duplicate seeds, so the
+    featured image and an inline image can no longer end up identical.
+- **Improved excerpt extractor**: prefers the first `<p>` so headings like
+  `<h2>Introduction</h2>` no longer end up as the card excerpt; breaks long
+  paragraphs on a sentence boundary; collapses whitespace from adjacent
+  block tags.
+- **README**: Anthropic models section is now evergreen — model names are
+  fetched dynamically by the provider, so the docs no longer reference a
+  specific (and rapidly aging) Claude lineup.
+
+### 🔐 Security
+
+- **All 8 npm-audit advisories resolved** (#10) via lockfile-only updates
+  (1 critical, 3 high, 1 moderate, 3 low). Headline transitive bumps:
+  `axios` → 1.15.2 (resolved 7 advisories), `form-data` → 4.0.5 (critical
+  unsafe boundary generation), `jws` → 3.2.3, `follow-redirects` → 1.16.0.
+  No direct dependency changes in `package.json`.
+
+### 📦 Packaging
+
+- **`engines` field added** (#9): `"node": ">=22.0.0"`. Older Node now
+  fails loudly at `npm install` time instead of crashing at runtime on ESM.
+- **`files` allowlist + `LICENSE`** (#7): introduced as part of the v2.0.0
+  npm publish prep so the tarball actually ships `dist/`.
+
+### 🐛 Bug Fixes
+
+- Fixed v2.0.0 never being published to npm (#5, #7). Installing
+  `ghost-myrtle` from npm previously gave a v1 CLI whose commands didn't
+  match the v2 README.
+
+---
+
 ## [2.0.0] - 2025-01-12
 
 ### 🚀 Major Changes
