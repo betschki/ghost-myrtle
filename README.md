@@ -115,9 +115,9 @@ myrtle config pexels
 - **API Key**: Get free from [Pexels API](https://www.pexels.com/api/)
 - **Free Tier**: 200 requests/hour, 20,000/month
 - **Benefits**:
-  - Keyword-relevant stock photos automatically added to posts
+  - Keyword-relevant featured images and inline stock photos automatically added to posts
   - Proper photographer attribution
-- **Fallback**: If not configured, posts use Lorem Picsum placeholder images
+- **Fallback**: If not configured, posts use Lorem Picsum placeholder images for featured and inline post images
 
 **Getting a Pexels API Key:**
 1. Visit [pexels.com/api](https://www.pexels.com/api/)

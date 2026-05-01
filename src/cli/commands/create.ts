@@ -402,13 +402,14 @@ export async function createCommand(args: string[]): Promise<void> {
           siteContext,
           title,
           currentPendingCategory.category,
-          [currentPendingCategory.category],
+          [title, currentPendingCategory.category],
           generationOptions
         );
 
         const post: PostContent = {
           title: generated.title,
           content: generated.content,
+          featureImage: generated.featureImage,
         };
 
         state = StateManager.markPostComplete(state, currentPendingCategory.category, post);

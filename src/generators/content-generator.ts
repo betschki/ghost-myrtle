@@ -30,10 +30,20 @@ export class ContentGenerator {
     options?: GenerationOptions
   ): Promise<GeneratedContent> {
     // Fetch images (will use Pexels if configured, Lorem Picsum otherwise)
-    let images: ImageResult[] | undefined;
+    let featureImage: GeneratedContent['featureImage'] | undefined;
+    let inlineImages: ImageResult[] | undefined;
+
     try {
       const searchKeywords = keywords || [category || title];
-      images = await this.imageService.getImagesForPost(searchKeywords, 2);
+      const images = await this.imageService.getImagesForPost(searchKeywords, 3);
+      featureImage = images[0]
+        ? {
+            url: images[0].url,
+            alt: images[0].alt,
+            caption: `Photo by ${images[0].photographer}`,
+          }
+        : undefined;
+      inlineImages = images.slice(1);
     } catch (error) {
       // If image fetching fails, continue without images
       console.warn('Failed to fetch images:', error);
@@ -45,7 +55,7 @@ export class ContentGenerator {
       this.provider.name,
       category,
       keywords,
-      images
+      inlineImages
     );
 
     const response = await this.provider.generate({
@@ -63,6 +73,7 @@ export class ContentGenerator {
     return {
       title,
       content,
+      featureImage,
       metadata: {
         keywords,
         wordCount,
