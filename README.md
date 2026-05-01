@@ -81,7 +81,7 @@ myrtle config provider anthropic
 ```
 
 - **API Key**: Get from [Anthropic Console](https://console.anthropic.com/)
-- **Models**: Claude Sonnet 4.5, Opus 3, Haiku 3.5
+- **Models**: Available Claude models (Opus, Sonnet, Haiku) are fetched automatically from the API
 
 #### OpenRouter
 

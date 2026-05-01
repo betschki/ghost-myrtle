@@ -1,6 +1,6 @@
 {
   "name": "ghost-myrtle",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A modern CLI tool to generate content for Ghost CMS using multiple AI providers (OpenAI, Anthropic, OpenRouter, Self-hosted).",
   "main": "dist/cli/index.js",
   "scripts": {

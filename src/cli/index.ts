@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'node:fs';
 import { configCommand } from './commands/config.js';
 import { createCommand } from './commands/create.js';
 import { testCommand } from './commands/test.js';
+
+// Read version from package.json so a release bump doesn't need a code change.
+// Layout (both during dev and once published): dist/cli/index.js → ../../package.json
+const pkg = JSON.parse(
+  readFileSync(new URL('../../package.json', import.meta.url), 'utf-8')
+) as { version: string };
 
 const HELP_MESSAGE = `
 🌿 Ghost Myrtle v2 - Modern AI Content Generation for Ghost CMS
@@ -79,8 +86,7 @@ async function main() {
       case '-v':
       case '--version':
       case 'version':
-        // Read version from package.json
-        console.log('Ghost Myrtle v2.0.0');
+        console.log(`Ghost Myrtle v${pkg.version}`);
         break;
 
       default:
