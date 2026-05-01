@@ -34,6 +34,51 @@ export interface ImageResult {
   alt: string;
   photographer: string;
   photographerUrl: string;
+  /** True for Pexels results, false for the Lorem Picsum fallback. */
+  fromPexels: boolean;
+}
+
+const LOREM_PICSUM_PHOTOGRAPHER = 'Lorem Picsum';
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function safeHttpUrl(value: string): string | null {
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.toString();
+    }
+  } catch {
+    // fall through
+  }
+  return null;
+}
+
+/**
+ * Render Pexels-compliant photo credit as HTML. Returns an empty string for
+ * Lorem Picsum fallbacks (no attribution required, and "Photo by Lorem Picsum"
+ * looks odd on a polished demo site). Pexels' API guidelines require linking
+ * both the photographer's profile and pexels.com.
+ */
+export function formatPhotoCredit(image: ImageResult): string {
+  if (!image.fromPexels) {
+    return '';
+  }
+
+  const photographer = escapeHtml(image.photographer);
+  const profileUrl = safeHttpUrl(image.photographerUrl);
+  const photographerHtml = profileUrl
+    ? `<a href="${escapeHtml(profileUrl)}">${photographer}</a>`
+    : photographer;
+
+  return `Photo by ${photographerHtml} on <a href="https://www.pexels.com">Pexels</a>`;
 }
 
 export class ImageService {
@@ -92,6 +137,7 @@ export class ImageService {
         alt: photo.alt || query,
         photographer: photo.photographer,
         photographerUrl: photo.photographer_url,
+        fromPexels: true,
       }));
     } catch (error) {
       if (error instanceof Error) {
@@ -112,38 +158,54 @@ export class ImageService {
     return {
       url: `https://picsum.photos/seed/${cleanSeed}/1600/900`,
       alt: `${keyword} - placeholder image`,
-      photographer: 'Lorem Picsum',
+      photographer: LOREM_PICSUM_PHOTOGRAPHER,
       photographerUrl: 'https://picsum.photos',
+      fromPexels: false,
     };
   }
 
   /**
-   * Get images for a blog post - tries Pexels, falls back to Lorem Picsum
+   * Get images for a blog post - tries Pexels (with progressively broader
+   * keywords), falls back to Lorem Picsum on errors or zero results.
    */
   async getImagesForPost(
     keywords: string[],
     count: number = 2
   ): Promise<ImageResult[]> {
     if (!this.isConfigured()) {
-      // Return fallback images
-      return keywords.slice(0, count).map((keyword) =>
-        this.getFallbackImage(keyword)
-      );
+      return this.fallbackImages(keywords, count);
     }
 
-    try {
-      // Use the first keyword for search
-      const query = keywords[0] || 'landscape';
-      return await this.searchImages(query, count);
-    } catch (error) {
-      // If Pexels fails, fall back to Lorem Picsum
-      console.warn(
-        'Pexels API failed, using fallback images:',
-        error instanceof Error ? error.message : 'Unknown error'
-      );
-      return keywords.slice(0, count).map((keyword) =>
-        this.getFallbackImage(keyword)
-      );
+    // Try each keyword in order so specific titles fall back to broader
+    // category terms before giving up on Pexels entirely. Title queries are
+    // often too specific to match Pexels stock photos.
+    const queries = keywords.length > 0 ? keywords : ['landscape'];
+
+    for (const query of queries) {
+      try {
+        const results = await this.searchImages(query, count);
+        if (results.length > 0) {
+          return results;
+        }
+      } catch (error) {
+        console.warn(
+          'Pexels API failed, using fallback images:',
+          error instanceof Error ? error.message : 'Unknown error'
+        );
+        return this.fallbackImages(keywords, count);
+      }
     }
+
+    return this.fallbackImages(keywords, count);
+  }
+
+  /**
+   * Build a list of Lorem Picsum images, one per distinct keyword, capped at
+   * `count`. Avoids padding with duplicate seeds (same seed = same picsum
+   * image), which would put the same URL on the hero and an inline slot.
+   */
+  private fallbackImages(keywords: string[], count: number): ImageResult[] {
+    const seeds = keywords.length > 0 ? keywords : ['placeholder'];
+    return seeds.slice(0, count).map((seed) => this.getFallbackImage(seed));
   }
 }

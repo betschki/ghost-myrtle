@@ -6,7 +6,11 @@ import type {
 } from '../types/index.js';
 import { generateBlogPostPrompt } from '../prompts/templates/blog.js';
 import { generateStaticPagePrompt } from '../prompts/templates/static-pages.js';
-import { ImageService, type ImageResult } from '../services/image-service.js';
+import {
+  ImageService,
+  formatPhotoCredit,
+  type ImageResult,
+} from '../services/image-service.js';
 
 /**
  * Content generator for pages and posts
@@ -36,13 +40,14 @@ export class ContentGenerator {
     try {
       const searchKeywords = keywords || [category || title];
       const images = await this.imageService.getImagesForPost(searchKeywords, 3);
-      featureImage = images[0]
-        ? {
-            url: images[0].url,
-            alt: images[0].alt,
-            caption: `Photo by ${images[0].photographer}`,
-          }
-        : undefined;
+      if (images[0]) {
+        const credit = formatPhotoCredit(images[0]);
+        featureImage = {
+          url: images[0].url,
+          alt: images[0].alt,
+          caption: credit || undefined,
+        };
+      }
       inlineImages = images.slice(1);
     } catch (error) {
       // If image fetching fails, continue without images

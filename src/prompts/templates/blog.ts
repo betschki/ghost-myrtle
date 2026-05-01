@@ -1,5 +1,16 @@
 import type { SiteContext, ProviderName } from '../../types/index.js';
-import type { ImageResult } from '../../services/image-service.js';
+import { formatPhotoCredit, type ImageResult } from '../../services/image-service.js';
+
+/**
+ * Render a single image as a Ghost-friendly figure block, with a Pexels-
+ * compliant photo credit. The figcaption is omitted entirely when there is
+ * no credit to render (Lorem Picsum fallbacks).
+ */
+function renderImageFigure(image: ImageResult): string {
+  const credit = formatPhotoCredit(image);
+  const figcaption = credit ? `<figcaption>${credit}</figcaption>` : '';
+  return `<figure><img src="${image.url}" alt="${image.alt}">${figcaption}</figure>`;
+}
 import {
   getBaseSystemPrompt,
   getSiteContextText,
@@ -94,7 +105,7 @@ export function generateBlogPostPromptClaude(
   let imageInstructions = '';
   if (images && images.length > 0) {
     imageInstructions = `   - Add ${images.length} relevant images using EXACTLY these URLs:
-${images.map((img, i) => `     Image ${i + 1}: <figure><img src="${img.url}" alt="${img.alt}"><figcaption>Photo by ${img.photographer}</figcaption></figure>`).join('\n')}
+${images.map((img, i) => `     Image ${i + 1}: ${renderImageFigure(img)}`).join('\n')}
    - Place these images naturally throughout the content to break up text
    - Use the EXACT URLs provided above - do not modify them`;
   }
@@ -198,7 +209,7 @@ export function generateBlogPostPromptOpenAI(
   let imageInstructions = '';
   if (images && images.length > 0) {
     imageInstructions = `   - Add ${images.length} relevant images using EXACTLY these URLs:
-${images.map((img, i) => `     Image ${i + 1}: <figure><img src="${img.url}" alt="${img.alt}"><figcaption>Photo by ${img.photographer}</figcaption></figure>`).join('\n')}
+${images.map((img, i) => `     Image ${i + 1}: ${renderImageFigure(img)}`).join('\n')}
    - Place these images naturally throughout the content to break up text
    - Use the EXACT URLs provided above - do not modify them`;
   }
